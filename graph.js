@@ -71,11 +71,81 @@ class Graph {
 
   }
 
-  /** traverse graph with BDS and returns array of Node values */
-  breadthFirstSearch(start) { }
+  /** traverse graph with BFS and returns array of Node values */
+  breadthFirstSearch(start) {
+    let toVisitQueue = [start];
+    let seen = new Set(toVisitQueue);
+    // let nodes = [];
+
+    while (toVisitQueue.length) {
+      const current = toVisitQueue.shift();
+      // nodes.push(current.value);
+
+      for (let neighbour of current.adjacent) {
+        if (!seen.has(neighbour)) {
+          toVisitQueue.push(neighbour);
+          seen.add(neighbour);
+        }
+      }
+    }
+
+    // console.log('seen', Array.from(seen).map(val => val.value));
+    // console.log('nodes', nodes);
+    // return nodes;
+    return Array.from(seen).map(node => node.value);
+  }
 
   /** find the distance of the shortest path from the start vertex to the end vertex */
-  distanceOfShortestPath(start, end) { }
+  distanceOfShortestPath(start, end) {
+    let toVisitQueue = [[start, 0]];
+    let seen = new Set(toVisitQueue);
+
+    while (toVisitQueue.length) {
+      const [current, depth] = toVisitQueue.shift(); // e.g. [start, 0]
+
+      if (current === end) return depth; // distance to node up til now i.e. depth
+
+      for (let neighbour of current.adjacent) {
+        if (!seen.has(neighbour)) {
+          toVisitQueue.push([neighbour, depth + 1]);
+          seen.add(neighbour);
+        }
+      }
+    }
+  }
+
+  /** find the distance of the shortest path from the start vertex to the end vertex */
+  // Recursive DFS just for practice:
+  // distanceOfShortestPath(start, end, seen = new Set([start])) {
+  //   // base cases:
+  //   if (start === end) return 0;
+
+  //   const pathsExhausted = Array.from(start.adjacent)
+  //     .map(neighbour => seen.has(neighbour))
+  //     .every(seenNeighbour => seenNeighbour === true);
+  //   if (pathsExhausted) return undefined;
+
+  //   let minDist = Infinity;
+
+  //   for (let neighbour of start.adjacent) {
+  //     if (!seen.has(neighbour)) {
+  //       seen.add(neighbour);
+
+  //       const neighbourMinDist = this.distanceOfShortestPath(
+  //         neighbour,
+  //         end,
+  //         new Set([...seen])
+  //       );
+
+  //       const distCandidates = [minDist];
+  //       if (neighbourMinDist !== undefined) distCandidates.push(neighbourMinDist + 1);
+
+  //       minDist = Math.min(...distCandidates);
+  //     }
+  //   }
+
+  //   return (minDist !== Infinity) ? minDist : undefined;
+  // }
 }
 
 module.exports = { Graph, Node };
