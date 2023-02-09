@@ -45,8 +45,14 @@ class Graph {
    * - update any adjacency lists using that vertex
    */
   removeVertex(vertex) {
-    for (let neighbor of vertex.adjacent) {
-      this.removeEdge(vertex, neighbor);
+    // Assumes undirected graph
+    // for (let neighbor of vertex.adjacent) {
+    //   this.removeEdge(vertex, neighbor);
+    // }
+
+    // Works for directed graphs as well
+    for (let node of this.nodes) {
+      if (node.adjacent.has(vertex)) node.adjacent.delete(vertex);
     }
     this.nodes.delete(vertex);
   }
@@ -68,18 +74,17 @@ class Graph {
       }
     }
     return nodes;
-
   }
 
   /** traverse graph with BFS and returns array of Node values */
   breadthFirstSearch(start) {
     let toVisitQueue = [start];
     let seen = new Set(toVisitQueue);
-    // let nodes = [];
+    let nodes = [];
 
     while (toVisitQueue.length) {
       const current = toVisitQueue.shift();
-      // nodes.push(current.value);
+      nodes.push(current.value);
 
       for (let neighbour of current.adjacent) {
         if (!seen.has(neighbour)) {
@@ -91,8 +96,8 @@ class Graph {
 
     // console.log('seen', Array.from(seen).map(val => val.value));
     // console.log('nodes', nodes);
-    // return nodes;
-    return Array.from(seen).map(node => node.value);
+    return nodes;
+    // return Array.from(seen).map(node => node.value); // Happens to be the same here
   }
 
   /** find the distance of the shortest path from the start vertex to the end vertex */
