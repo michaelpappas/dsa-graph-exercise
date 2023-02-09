@@ -16,26 +16,60 @@ class Graph {
   }
 
   /** add Node instance and add it to nodes property on graph. */
-  addVertex(vertex) { }
+  addVertex(vertex) {
+    this.nodes.add(vertex);
+  }
 
   /** add array of new Node instances and adds to them to nodes property. */
-  addVertices(vertexArray) { }
+  addVertices(vertexArray) {
+    for (let vertex of vertexArray) {
+      this.addVertex(vertex);
+    }
+  }
 
   /** add edge between vertices v1,v2 */
-  addEdge(v1, v2) { }
+  addEdge(v1, v2) {
+    v1.adjacent.add(v2);
+    v2.adjacent.add(v1);
+  }
 
   /** remove edge between vertices v1,v2 */
-  removeEdge(v1, v2) { }
+  removeEdge(v1, v2) {
+    v1.adjacent.delete(v2);
+    v2.adjacent.delete(v1);
+  }
 
   /** remove vertex from graph:
    *
    * - remove it from nodes property of graph
    * - update any adjacency lists using that vertex
    */
-  removeVertex(vertex) { }
+  removeVertex(vertex) {
+    for (let neighbor of vertex.adjacent) {
+      this.removeEdge(vertex, neighbor);
+    }
+    this.nodes.delete(vertex);
+  }
 
   /** traverse graph with DFS and returns array of Node values */
-  depthFirstSearch(start) { }
+  depthFirstSearch(start) {
+    let toVisitStack = [start]; //[b]
+    let seen = new Set(toVisitStack); //[a, b]
+    let nodes = [];//[a,b,d,c]
+
+    while (toVisitStack.length > 0) {
+      const current = toVisitStack.pop();
+      nodes.push(current.value);
+      for (let neighbor of current.adjacent) {
+        if (!seen.has(neighbor)) {
+          toVisitStack.push(neighbor);
+          seen.add(neighbor);
+        }
+      }
+    }
+    return nodes;
+
+  }
 
   /** traverse graph with BDS and returns array of Node values */
   breadthFirstSearch(start) { }
@@ -44,4 +78,4 @@ class Graph {
   distanceOfShortestPath(start, end) { }
 }
 
-module.exports = { Graph, Node }
+module.exports = { Graph, Node };
